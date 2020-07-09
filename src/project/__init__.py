@@ -1,4 +1,5 @@
-from flask import Flask
+import marshmallow
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
@@ -18,6 +19,12 @@ def register_blueprints(app):
     app.register_blueprint(status)
 
 
+def register_error_handler(app):
+    @app.errorhandler(marshmallow.exceptions.ValidationError)
+    def validation_error_handler(e):
+        return jsonify(e.messages), 400
+
+
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -26,5 +33,6 @@ def create_app():
     ma.init_app(app)
     migrate.init_app(app, db)
     register_blueprints(app)
+    register_error_handler(app)
 
     return app
