@@ -43,7 +43,6 @@ def list(usuario):
 @blueprint.route('/deliveries', methods=['POST'])
 @autenticar
 def create(usuario):
-    print(usuario)
     datos = request.json
     datos['usuario_id'] = usuario['id']
     pedido = pedido_schema.load(datos)
